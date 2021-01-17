@@ -9,8 +9,6 @@ md = markdown.Markdown()
 
 from . import util
 
-entries = util.list_entries()
-
 class searchForm(forms.Form):
     searchInput = forms.CharField(
         label="Search",
@@ -37,7 +35,7 @@ class newPageForm(forms.Form):
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
-        "entries": entries,
+        "entries": util.list_entries(),
         "form": searchForm()
     })
 
@@ -47,6 +45,7 @@ def search(request):
         results = []
         if form.is_valid():
             search = form.cleaned_data["searchInput"]
+            entries = util.list_entries()
             for entry in entries:
                 if entry.lower() == search.lower():
                     return HttpResponseRedirect(reverse('encyclopedia:content', args=[entry]))
@@ -67,14 +66,21 @@ def content(request, name):
         raise Http404("Page does not exist")
     else:
         return render(request, "encyclopedia/content.html", {
-            "entries": entries,
+            "entries": util.list_entries(),
             "form": searchForm(),
             "name": name,
             "text": md.convert(util.get_entry(name))
         })
 
 def newPage(request):
-        return render(request, "encyclopedia/newpage.html", {
-        "form": searchForm(),
-        "newpageform": newPageForm()
+    if request.method == "POST":
+        form = newPageForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["newTitle"]
+            content = form.cleaned_data['newContent']
+            util.save_entry(title,content)
+
+    return render(request, "encyclopedia/newpage.html", {
+    "form": searchForm(),
+    "newpageform": newPageForm()
     })
