@@ -14,8 +14,26 @@ entries = util.list_entries()
 class searchForm(forms.Form):
     searchInput = forms.CharField(
         label="Search",
-        widget=forms.TextInput(attrs={'placeholder': 'Search Encyclopedia'})
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Search Encyclopedia'
+            })
         )
+
+class newPageForm(forms.Form):
+    newTitle = forms.CharField(
+        label="Title",
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Title'
+            })
+    )
+    newContent = forms.CharField(
+        label="Content",
+        widget=forms.Textarea(attrs={
+            'placeholder': 'content',
+            'rows':20,
+            'cols':120
+        })
+    )
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -54,3 +72,9 @@ def content(request, name):
             "name": name,
             "text": md.convert(util.get_entry(name))
         })
+
+def newPage(request):
+        return render(request, "encyclopedia/newpage.html", {
+        "form": searchForm(),
+        "newpageform": newPageForm()
+    })
