@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django import forms
 from django.shortcuts import render
 from django.http import Http404
@@ -79,6 +80,7 @@ def newPage(request):
             title = form.cleaned_data["newTitle"]
             content = form.cleaned_data['newContent']
             util.save_entry(title,content)
+            messages.success(request, "New page created")
 
     return render(request, "encyclopedia/newpage.html", {
     "form": searchForm(),
