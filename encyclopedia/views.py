@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.http import Http404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+import random
 import markdown
 md = markdown.Markdown()
 
@@ -46,7 +47,8 @@ class editPageForm(forms.Form):
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries(),
-        "form": searchForm()
+        "form": searchForm(),
+        "rndPage": random.choice(util.list_entries())
     })
 
 def search(request):
@@ -67,6 +69,8 @@ def search(request):
             })
 
     return render(request, "encyclopedia/search.html", {
+        "entries": util.list_entries(),
+        "rndPage": random.choice(util.list_entries()),
         "form": searchForm(),
         "results": results
     })
@@ -77,6 +81,7 @@ def content(request, name):
     else:
         return render(request, "encyclopedia/content.html", {
             "entries": util.list_entries(),
+            "rndPage": random.choice(util.list_entries()),
             "form": searchForm(),
             "name": name,
             "text": md.convert(util.get_entry(name))
@@ -98,6 +103,8 @@ def newPage(request):
                 messages.success(request, "New page created")
 
     return render(request, "encyclopedia/newpage.html", {
+    "entries": util.list_entries(),
+    "rndPage": random.choice(util.list_entries()),
     "form": searchForm(),
     "newpageform": newPageForm()
     })
@@ -115,6 +122,8 @@ def editPage(request, name):
             return HttpResponseRedirect(reverse('encyclopedia:content', args=[name]))
 
     return render(request, "encyclopedia/editpage.html", {
+    "entries": util.list_entries(),
+    "rndPage": random.choice(util.list_entries()),
     "form": searchForm(),
     "editpageform": editPageForm(initial=initial_data),
     "name": name
