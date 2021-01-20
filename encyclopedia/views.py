@@ -79,8 +79,14 @@ def newPage(request):
         if form.is_valid():
             title = form.cleaned_data["newTitle"]
             content = form.cleaned_data['newContent']
-            util.save_entry(title,content)
-            messages.success(request, "New page created")
+            entries = util.list_entries()
+            for entry in entries:
+                if entry.lower() == title.lower():
+                    messages.error(request, "Page already exists")
+                    createKey = False
+            if createKey:
+                util.save_entry(title,content)
+                messages.success(request, "New page created")
 
     return render(request, "encyclopedia/newpage.html", {
     "form": searchForm(),
