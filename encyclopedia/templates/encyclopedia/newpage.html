@@ -22,10 +22,12 @@
     {% endif %}
 
     <form action="{% url 'encyclopedia:newpage' %}" method="post">
-        {% csrf_token %}
-        {{ newpageform }}
-        <input type="submit">
-        <!-- <input class="search" type="text" name="q" placeholder="Search Encyclopedia"> -->
+        <div class="form-group">
+            {% csrf_token %}
+            {{ newpageform }}
+            <input type="submit">
+            <!-- <input class="search" type="text" name="q" placeholder="Search Encyclopedia"> -->
+        </div>
     </form>
 
 {% endblock %}

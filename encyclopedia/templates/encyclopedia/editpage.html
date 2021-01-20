@@ -1,0 +1,19 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia
+{% endblock %}
+
+{% block body %}
+    <h1>Edit page entry for '{{ name }}'</h1>
+
+    <form action="{% url 'encyclopedia:editpage' name %}" method="post">
+        <div class="form-group">
+            {% csrf_token %}
+            {{ editpageform }}
+            <input type="submit">
+            <!-- <input class="search" type="text" name="q" placeholder="Search Encyclopedia"> -->
+        </div>
+    </form>
+
+{% endblock %}

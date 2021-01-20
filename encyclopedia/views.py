@@ -34,6 +34,15 @@ class newPageForm(forms.Form):
         })
     )
 
+class editPageForm(forms.Form):
+    editContent = forms.CharField(
+        label="Content",
+        widget=forms.Textarea(attrs={
+            'rows':20,
+            'cols':120,
+        })
+    )
+
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries(),
@@ -91,4 +100,22 @@ def newPage(request):
     return render(request, "encyclopedia/newpage.html", {
     "form": searchForm(),
     "newpageform": newPageForm()
+    })
+
+def editPage(request, name):
+    print(name)
+    initial_data = {
+        'editContent': util.get_entry(name)
+    }
+    if request.method == "POST":
+        form = editPageForm(request.POST)
+        if form.is_valid():
+            content = form.cleaned_data['editContent']
+            util.save_entry(name, content)
+            return HttpResponseRedirect(reverse('encyclopedia:content', args=[name]))
+
+    return render(request, "encyclopedia/editpage.html", {
+    "form": searchForm(),
+    "editpageform": editPageForm(initial=initial_data),
+    "name": name
     })
